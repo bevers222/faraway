@@ -1,4 +1,5 @@
 # ![faraway](https://raw.githubusercontent.com/bevers222/faraway/master/resources/faraway.png)
+[![GitHub stars](https://img.shields.io/github/stars/bevers222/faraway.svg?style=social&label=Star)](https://github.com/bevers222/faraway)
 > Quickly search for and jump to directories in a git repository
 
 ---
