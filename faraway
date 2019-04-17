@@ -1,0 +1,113 @@
+#!/usr/bin/env bash
+# far_away: script to search for and cd to directories in a git repository quickly.
+#
+# Usage:
+#   far_away <directory name>
+#
+
+# takes all the matching directories and draws a menu for it
+function draw_menu(){
+    # tput sc
+    for dir in "${dir_list[@]}"; do
+        short_dir=$(echo $dir | awk -v g="$GIT_ROOT_SHORT" -F"$GIT_ROOT_SHORT" '{print g$2}')
+        if [[ ${dir_list[$cur]} == $dir ]]; then
+            echo " ${GREEN}>${RESET} ${BLUE}$short_dir${RESET}"
+        else
+            echo "   $short_dir"
+        fi
+    done
+}
+
+# clears the menu
+function clear_menu()  {
+    for i in "${dir_list[@]}"; do 
+        tput cuu1
+    done
+    
+}
+
+# cleans up the window
+function cleanup(){
+    tput cnorm
+    trap - INT TERM EXIT
+    for i in "${dir_list[@]}" "title"; do 
+        tput cuu1
+    done
+    tput sc
+    for i in "${dir_list[@]}" "title"; do 
+        echo -en "\033[2K"
+        tput cud1
+    done
+    tput rc
+    echo "${GREEN}?${RESET} search results ${BLUE}$(echo ${dir_list[$cur]} | awk -v g="$GIT_ROOT_SHORT" -F"$GIT_ROOT_SHORT" '{print g$2}')${RESET}"
+
+}
+
+# listens for key captures
+function key_capture(){
+    read -s -n 3 key 2>/dev/null >&2
+    case $key in
+        $ESC\[A )
+            # up arrow
+            echo up
+            ;;
+        $ESC\[B )
+            # down arrow
+            echo down
+            ;;
+        $ESC\[C )
+            # right arrow
+            echo right
+            ;;
+        $ESC\[D )
+            # left arrow
+            echo left
+            ;;
+        "" )
+            # enter key
+            echo enter
+            ;;
+    esac
+}
+
+function _main(){
+    trap "tput cnorm; echo; trap - INT TERM EXIT; return" INT TERM EXIT
+    GIT_ROOT=$(git rev-parse --show-toplevel)
+    GIT_ROOT_SHORT=$(git rev-parse --show-toplevel | awk -F'/' '{print $NF}')
+    BLUE=$(tput setaf 6)
+    GREEN=$(tput setaf 2)
+    GRAY=$(tput setaf 8)
+    RESET=$(tput sgr0)
+    ESC=$( printf "\033")
+    cur=0
+    tput civis
+    dir_list=($(find $GIT_ROOT -not -path '*/\.git*' -type d 2>/dev/null | grep -e ".*${1}$"))
+    dir_list_length=${#dir_list[@]}
+    echo "${GREEN}?${RESET} search results ${GRAY}(Use arrow keys)${RESET}"
+    draw_menu
+    while true; do
+        case $(key_capture) in
+            up|left)
+                cur=$(( $cur - 1 ))
+                if [[ $cur -lt 0 ]]; then
+                    cur=$(( $dir_list_length - 1 ))
+                fi
+                ;;
+            down|right)
+                cur=$(( $cur + 1 ))
+                if [[ $cur -gt $(( $dir_list_length - 1 )) ]]; then
+                    cur=0
+                fi
+                ;;
+            enter)
+                cleanup
+                target_dir="${dir_list[$cur]}"
+                cd "$target_dir"
+                break
+                ;;
+        esac
+        clear_menu
+        draw_menu
+    done
+}
+alias far=_main
