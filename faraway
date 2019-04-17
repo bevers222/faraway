@@ -72,17 +72,38 @@ function key_capture(){
 
 function _main(){
     trap "tput cnorm; echo; trap - INT TERM EXIT; return" INT TERM EXIT
-    GIT_ROOT=$(git rev-parse --show-toplevel)
-    GIT_ROOT_SHORT=$(git rev-parse --show-toplevel | awk -F'/' '{print $NF}')
     BLUE=$(tput setaf 6)
     GREEN=$(tput setaf 2)
     GRAY=$(tput setaf 8)
     RESET=$(tput sgr0)
     ESC=$( printf "\033")
+
+    if ! [[ $(git rev-parse --is-inside-work-tree 2>/dev/null) ]]; then
+        echo "${GREEN}?${RESET} search results ${BLUE}this is not a git repository${RESET}"
+        tput cnorm
+        return
+    fi
+
+    GIT_ROOT=$(git rev-parse --show-toplevel)
+
+    if [[ -z "$1" ]]; then
+       cd "$GIT_ROOT"
+       return
+    fi
+
+    GIT_ROOT_SHORT=$(git rev-parse --show-toplevel | awk -F'/' '{print $NF}')
     cur=0
     tput civis
     dir_list=($(find $GIT_ROOT -not -path '*/\.git*' -type d 2>/dev/null | grep -e ".*${1}$"))
     dir_list_length=${#dir_list[@]}
+
+    if [[ $dir_list_length -eq 0 ]]; then
+        echo "${GREEN}?${RESET} search results ${BLUE}none${RESET}"
+        tput cnorm
+        return
+    fi
+
+
     echo "${GREEN}?${RESET} search results ${GRAY}(Use arrow keys)${RESET}"
     draw_menu
     while true; do
