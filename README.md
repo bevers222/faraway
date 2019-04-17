@@ -1,13 +1,15 @@
-# faraway
-Quickly search for and jump to directories in a git repository
+# ![faraway](https://raw.githubusercontent.com/bevers222/faraway/master/resources/faraway.png)
+> Quickly search for and jump to directories in a git repository
+
+---
+
+![faraway usage example](https://raw.githubusercontent.com/bevers222/faraway/master/resources/faraway.gif)
 
 
 ## What is farway?
 Have you ever been several folders deep in a repository and you needed to cd all the way up and into another directory? ex: cd ../../../../dev
 
-faraway is a tool that lets you search any git repository for a folder and switch to it from a simple menu!
-
-![faraway usage example](https://media.giphy.com/media/3WuUgO2KjUlL0QHrJo/giphy.gif)
+faraway is a tool that lets you search a git repository for a folder and switch to it from a simple menu!
 
 ## Quick Start
 1. Clone this repository
@@ -20,13 +22,15 @@ faraway is a tool that lets you search any git repository for a folder and switc
 3. Remember to source your .bash_profile so you can use the new tool by running this command in your terminal window
 
     `source ~/.bash_profile`
+
 4. Profit
 
 ## Usage
 The base command is `far`
+
 `far` - move you to the git repository's root directory
 
-`far dirtosearchfor` - search the git repository and give you a menu based on results
+`far [dirtosearchfor]` - search the git repository and give you a menu based on results
 
 Use the Up or Left arrow to move up the list
 
