@@ -37,10 +37,8 @@ Use the Up or Left arrow to move up the list
 Use the Down or Right arrow to move down the list
 
 ## Additional Information
-This is the first version of this tool. It was built and tested in iTerm2 on macOS with bash 5.0.2. Additional support for different terminals and OS is coming! 
+This is the first version of this tool. It was built and tested in iTerm2 on macOS with bash 5.0.2. I don't know specifically where it will not work, so try it out! Additional support for different terminals and OS is coming! 
 
 It's a work in progress. I'm not fluent in bash. If you want to help me do things better and improve this tool, submit a PR! I love new ideas.
 
 faraway was inspired by another great tool [bitcar](https://github.com/carsdotcom/bitcar) - allows you to seamlessly jump between repos from your command line. I highly suggest checking it out!
-
-    
